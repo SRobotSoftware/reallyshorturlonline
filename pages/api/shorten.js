@@ -3,6 +3,7 @@ import shortid from 'shortid'
 
 import dbConnect from '../../lib/dbConnect'
 import Url from '../../models/url'
+import checkIfSafe from '../../lib/safeBrowsing'
 
 const baseUrl = process.env.BASE_URL
 
@@ -12,7 +13,7 @@ export default async function handler(req, res) {
 
     if (method !== 'POST') return res.status(405).json('Incorrect Method')
     if (!longUrl) return res.status(400).json('No URL given')
-    if (!validUrl.isUri(longUrl)) return res.status(400).json('Invalid url')
+    if (!validUrl.isWebUri(longUrl) || !(await checkIfSafe(longUrl))) return res.status(400).json('Invalid url')
 
     await dbConnect()
 

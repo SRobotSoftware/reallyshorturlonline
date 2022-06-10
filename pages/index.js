@@ -3,14 +3,21 @@ import styles from '../styles/Home.module.css'
 import validUrl from 'valid-url'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import Link from "next/link";
-
-const validateRegex = new RegExp('https?://', 'i')
+import Link from 'next/link'
 
 export default function Home() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm()
     const [shortUrl, setShortUrl] = React.useState()
     const [code, setCode] = React.useState()
+    const validate = async url => {
+        setShortUrl('')
+        if (!url || !validUrl.isWebUri(url)) return false
+        const response = await fetch('/api/safety', {
+            method: 'POST',
+            body: url
+        })
+        return await response.json()
+    }
     const onSubmit = async data => {
         const longUrl = data.url
         const endpoint = '/api/shorten'
@@ -52,7 +59,7 @@ export default function Home() {
                     { ...register('url', {
                         required: true,
                         pattern: /https?:\/\/.*/i,
-                        validate: (e) => !!validUrl.isUri(e)
+                        validate: x => validate(x)
                     }) }
                 />
                 <button type="submit">Shorten!</button>

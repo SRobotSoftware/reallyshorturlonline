@@ -1,12 +1,11 @@
 import dbConnect from '../../../lib/dbConnect'
 import Url from '../../../models/url'
-import Error from 'next/error'
 
 export default async function handler(req, res) {
     const { method } = req
     const { urlCode } = req.query
 
-    console.log({urlCode, method})
+    console.log({ urlCode, method })
 
     await dbConnect()
 

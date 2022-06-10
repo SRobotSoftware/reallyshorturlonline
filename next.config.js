@@ -40,7 +40,7 @@ const csp = {
   value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim(),
 }
 
-if (process.env.NODE_ENV !== 'development') securityHeaders.push(csp)
+// if (process.env.NODE_ENV !== 'development') securityHeaders.push(csp)
 
 module.exports = {
   nextConfig,
