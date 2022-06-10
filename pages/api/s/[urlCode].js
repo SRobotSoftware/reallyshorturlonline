@@ -1,19 +1,20 @@
 import dbConnect from '../../../lib/dbConnect'
 import Url from '../../../models/url'
 
-export default async function handler(req, res) {
-    const { method } = req
+export default async function handleUrlCode(req, res) {
+    if (req.method !== 'GET') return res.status(405).json('Incorrect Method')
+
     const { urlCode } = req.query
 
-    console.log({ urlCode, method })
+    logger.debug('Handling')
 
     await dbConnect()
 
-    const url = await Url.findOne({ urlCode })
+    const url = await Url.findByUrlCode(urlCode)
 
     if (!url?.longUrl) return res.redirect('/404')
     url.hits++
     url.save()
 
-    res.redirect(url.longUrl)
+    return res.redirect(url.longUrl)
 }

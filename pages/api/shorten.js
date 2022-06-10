@@ -1,5 +1,5 @@
 import validUrl from 'valid-url'
-import shortid from 'shortid'
+import { createHash } from 'node:crypto'
 
 import dbConnect from '../../lib/dbConnect'
 import Url from '../../models/url'
@@ -7,39 +7,35 @@ import checkIfSafe from '../../lib/safeBrowsing'
 
 const baseUrl = process.env.BASE_URL
 
-export default async function handler(req, res) {
-    const { method } = req
+export default async function handleShorten(req, res) {
+    if (req.method !== 'POST') return res.status(405).json('Incorrect Method')
+
     const { longUrl } = req.body
 
-    if (method !== 'POST') return res.status(405).json('Incorrect Method')
     if (!longUrl) return res.status(400).json('No URL given')
     if (!validUrl.isWebUri(longUrl) || !(await checkIfSafe(longUrl))) return res.status(400).json('Invalid url')
 
+    const hash = createHash('md5').update(longUrl).digest('hex')
+
     await dbConnect()
 
-    const urlCode = shortid.generate()
-
     try {
-        let url = await Url.findOne({ longUrl })
+        let url = await Url.findByHash(hash)
 
-        if (url) {
-            return res.status(200).json(url)
-        }
+        if (url) return res.status(200).json({ baseUrl, url })
 
         url = new Url({
+            _id: hash,
             longUrl,
-            baseUrl,
-            urlCode,
         })
 
         await url.save()
 
-        return res.status(200).json(url)
-
+        return res.status(200).json({ baseUrl, url })
     } catch (error) {
         console.error(error)
-        return errorHandler(req, res, error)
+        return res.status(500).json('Something went wrong')
     }
 
-    res.status(500).json('Something went wrong')
+    return res.status(500).json('Something went really wrong')
 }

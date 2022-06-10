@@ -4,21 +4,21 @@ import validUrl from 'valid-url'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
+import debounce from '../lib/debounce'
 
 export default function Home() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm()
     const [shortUrl, setShortUrl] = React.useState()
     const [code, setCode] = React.useState()
     const validate = async url => {
-        setShortUrl('')
+        console.log('validating')
         if (!url || !validUrl.isWebUri(url)) return false
-        const response = await fetch('/api/safety', {
-            method: 'POST',
-            body: url
-        })
+        const response = await fetch('/api/safety', { method: 'POST', body: url })
         return await response.json()
     }
+    const validateChange = debounce(validate)
     const onSubmit = async data => {
+        console.log('submitting')
         const longUrl = data.url
         const endpoint = '/api/shorten'
         const options = {
@@ -30,10 +30,11 @@ export default function Home() {
         }
         const response = await fetch(endpoint, options)
         const result = await response.json()
-        const url = result.baseUrl + result.urlCode
+        console.log({result})
+        const url = result.baseUrl + result.url.urlCode
         setShortUrl(url)
-        setCode(result.urlCode)
-        navigator.clipboard.writeText(url)
+        setCode(result.url.urlCode)
+        await navigator.clipboard.writeText(url)
     }
   return (
     <div className={styles.container}>
@@ -55,11 +56,12 @@ export default function Home() {
                     id="url"
                     name="url"
                     required
+                    onInput={() => setShortUrl('')}
                     defaultValue="https://www.google.com"
                     { ...register('url', {
                         required: true,
                         pattern: /https?:\/\/.*/i,
-                        validate: x => validate(x)
+                        validate: x => validateChange(x)
                     }) }
                 />
                 <button type="submit">Shorten!</button>
