@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import validUrl from 'valid-url'
 import React from 'react'
 import { useForm } from 'react-hook-form'
@@ -37,46 +36,53 @@ export default function Home() {
         await navigator.clipboard.writeText(url)
     }
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Really Short URLs Online</title>
-        <meta name="description" content="Make your URLs super short!" />
-      </Head>
+    <div className="columns is-centered is-vcentered">
+        <div className="column is-three-quarters">
+            <div className="section is-large">
+                <Head>
+                    <title>Really Short URLs Online</title>
+                    <meta name="description" content="Make your URLs super short!" />
+                </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to Really Short URLs Online!
-        </h1>
-
-        <div className={styles.description}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <label htmlFor="url">Url:</label>
-                <input
-                    type="text"
-                    id="url"
-                    name="url"
-                    required
-                    onInput={() => setShortUrl('')}
-                    defaultValue="https://www.google.com"
-                    { ...register('url', {
-                        required: true,
-                        pattern: /https?:\/\/.*/i,
-                        validate: x => validateChange(x)
-                    }) }
-                />
-                <button type="submit">Shorten!</button>
-                <br/>
-                <div>
-                    {errors.url && <span>Please enter a valid URL</span>}
+                <div className="content has-text-centered is-large">
+                        <p className="title">
+                            Welcome to Really Short URLs Online!
+                        </p>
+                        <p className="subtitle">
+                            Make your URLs super short!
+                        </p>
                 </div>
-            </form>
+                <section className="section">
+                    <form className="field block has-addons" onSubmit={handleSubmit(onSubmit)}>
+                        <label className="label" htmlFor="url"></label>
+                        <input
+                            className="input is-large"
+                            type="text"
+                            id="url"
+                            name="url"
+                            required
+                            onInput={() => setShortUrl('')}
+                            defaultValue="https://www.google.com"
+                            { ...register('url', {
+                            required: true,
+                            pattern: /https?:\/\/.*/i,
+                            validate: x => validateChange(x)
+                        }) }/>
+                        <button className="button is-primary is-large" type="submit">Shorten!</button>
+                    </form>
+                    <div className="block has-text-centered">
+                        {errors.url && <span>Please enter a valid URL beginning with <code>http://</code> or <code>https://</code></span>}
+                    </div>
+                    { shortUrl &&
+                        <div className="box has-text-centered">
+                            <Link href={`/api/s/${code}`}>
+                                <a className="is-size-4">{shortUrl}</a>
+                            </Link>
+                        </div>
+                    }
+                </section>
+            </div>
         </div>
-          { shortUrl &&
-              <Link href={`/api/s/${code}`}>
-                <a>{shortUrl}</a>
-              </Link>
-          }
-      </main>
     </div>
   )
 }
