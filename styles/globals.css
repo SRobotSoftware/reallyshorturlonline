@@ -1,1 +1,16 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+@media screen and (max-width: 1279px) {
+    section div a.is-size-4 {
+        word-break: break-all;
+    }
+    .button.is-large {
+        width: 100%;
+    }
+    .is-large.input, .is-large.textarea {
+        font-size: 1em;
+    }
+    .field.has-addons {
+        display: block;
+    }
+}
