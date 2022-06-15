@@ -35,6 +35,4 @@ export default async function handleShorten(req, res) {
     console.error(error)
     return res.status(500).json('Something went wrong')
   }
-
-  return res.status(500).json('Something went really wrong')
 }
