@@ -1,9 +1,8 @@
-import validUrl from 'valid-url'
-import { createHash } from 'node:crypto'
-
-import dbConnect from '../../lib/dbConnect'
 import Url from '../../models/url'
 import checkIfSafe from '../../lib/safeBrowsing'
+import { createHash } from 'node:crypto'
+import dbConnect from '../../lib/dbConnect'
+import validUrl from 'valid-url'
 
 const baseUrl = process.env.BASE_URL
 

@@ -1,5 +1,5 @@
-import dbConnect from '../../../lib/dbConnect'
 import Url from '../../../models/url'
+import dbConnect from '../../../lib/dbConnect'
 import logger from '../../../lib/logger'
 
 export default async function handleUrlCode(req, res) {

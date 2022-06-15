@@ -1,5 +1,6 @@
-import dbConnect from '../../lib/dbConnect'
 import { MostPopular } from '../../models/urlViews'
+import dbConnect from '../../lib/dbConnect'
+
 const baseUrl = process.env.BASE_URL
 
 export default async function handleMostPopular(req, res) {

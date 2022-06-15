@@ -20,6 +20,15 @@
         "react"
     ],
     "rules": {
+        "sort-imports": "error",
+        "object-curly-spacing": [
+            "error",
+            "always",
+            {
+                "objectsInObjects": true,
+                "arraysInObjects": true
+            }
+        ],
         "indent": [
             "error",
             2
